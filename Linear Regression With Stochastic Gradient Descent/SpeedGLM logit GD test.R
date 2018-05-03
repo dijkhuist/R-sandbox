@@ -5,7 +5,7 @@
 #'save the coefficients and turn the out come to a logistic regression prediction
 #'
 #' read csv file (read.csv("csvfilename.csv"))
-
+library(speedglm)
 titanic=read.csv("train_titanic.csv")
 
 #divide dataset in three subsets (subset(datasetname,factor <= or == or > or < value))
@@ -34,46 +34,54 @@ predict_osl<-function(row,coef){
   yhat_intercept = coef_m[1]
   y_pred=0
   #calculate the prediction of y
-  for (i in 1:n){
-    y_pred = y_pred + coef_m[i + 1] * row_m[i+1]
-  }
+  #to do matrix, vectorize
+  #for (i in 1:n){
+  #  y_pred = y_pred + coef_m[i + 1] * row_m[i+1]
+  #}
+  #BROWSER
+  y_pred <- coef %*% t(cbind(intercept = 1, row[-1]))
   #convert the result into a logit function
-  yhat_return=plogis(yhat_intercept+y_pred)  
+  yhat_return=plogis(y_pred)  
   return(yhat_return)
 }
 
 #Gradient descent function
-gradDescent<-function(y, x,intercept,theta,yhat,alpha){
+gradDescent<-function(y, x,theta,alpha){
     #calculate the adjustment of the theta and intercept based on one record 
     #(coefficients are a combination of theta and intercept )
     n <- length(y)
     # this is a vectorized form for the gradient of the cost function
     theta_new <- theta - alpha*(1/n)*((x)%*%(x%*%theta - y))
-    intercept_new <- intercept - alpha * ((1 / n) * (yhat - y))
-    results=c(intercept_new,theta_new)
+    #browser()
+    results=theta_new
     return(results)
 }
 #Online Gradient descent 
 gradientdescent_osl<-function (row,coef,alpha){
   #prediction of the yhat using the former coefficients
-  prev_yhat=predict_osl(row,coef)
+  #prev_yhat=predict_osl(row,coef)
   
   row_m=as.matrix(row)
   coef_m=as.matrix(coef)
   #determine intercept
-  intercept=coef_m[1]
+  #intercept=coef_m[1]
   #determine the coefficients (or theta)
-  coef_x=coef_m[-1,]
+  #coef_x=coef_m[-1,]
   #the values of the row
   y=row_m[1]
   x=row_m[,-1]
-  results=gradDescent (y, x,intercept,coef_x,prev_yhat,alpha)
+  x_i=c(intercept=1,x)
+  #browser()
+  #prev_yat eruit
+  results=gradDescent (y, x_i,coef_m,alpha)
   return(results)
 }  
 
 #determine the new coefficients
-coef_new=gradientdescent_osl(train_titanic_3,coef,0.0001)
-print(coef_new)
+#to do:plot learning curve
+
+coef=gradientdescent_osl(train_titanic_3,coef,0.001)
+print(coef)
 
 y_pred=predict_osl(train_titanic_3,coef_new)
 print(y_pred)
