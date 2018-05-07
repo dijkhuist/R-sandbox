@@ -1,4 +1,4 @@
-#'Test of online algorith
+#'Test of online algorithm
 #'start with glmspeed to determine coefficients
 #'change to logit/expit plogis/qlogis in a continu value
 #'use the coefficients as a starting point for gradient descent
@@ -29,7 +29,7 @@ predict_osl<-function(row,coef){
   row_m=as.matrix(row)
   coef_m=as.matrix(coef)
   #determine number of features
-  n=ncol(row)-1
+  #n=ncol(row)-1
   #determine the value of the intercept
   yhat_intercept = coef_m[1]
   y_pred=0
