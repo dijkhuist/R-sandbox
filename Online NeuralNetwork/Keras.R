@@ -46,3 +46,12 @@ history <- model %>% fit(
 
 model %>% evaluate(x_test, y_test,verbose = 0)
 
+save_model_hdf5(model, 'model.hdf5', overwrite = TRUE,
+                include_optimizer = TRUE)
+
+loaded_model<-load_model_hdf5('model.hdf5', custom_objects = NULL, compile = TRUE)
+history_loaded<-loaded_model%>% fit(
+  x_train, y_train, 
+  epochs = 30, batch_size = 128, 
+  validation_split = 0.2
+)

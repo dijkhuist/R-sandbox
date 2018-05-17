@@ -8,7 +8,7 @@
 library(speedglm)
 titanic=read.csv("train_titanic.csv")
 
-#divide dataset in three subsets (subset(datasetname,factor <= or == or > or < value))
+#different sets
 train_titanic_1=titanic[0:700,]
 train_titanic_2=titanic[701:891,]
 train_titanic_3=titanic[10:10,]
